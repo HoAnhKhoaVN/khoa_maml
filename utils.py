@@ -3,9 +3,10 @@ import numpy as np
 import os
 import random
 import tensorflow as tf
+from absl import flags
 
-from tensorflow.contrib.layers.python import layers as tf_layers
-from tensorflow.python.platform import flags
+# from tensorflow.contrib.layers.python import layers as tf_layers
+# from tensorflow.python.platform import flags
 
 FLAGS = flags.FLAGS
 
@@ -38,9 +39,9 @@ def conv_block(inp, cweight, bweight, reuse, scope, activation=tf.nn.relu, max_p
 
 def normalize(inp, activation, reuse, scope):
     if FLAGS.norm == 'batch_norm':
-        return tf_layers.batch_norm(inp, activation_fn=activation, reuse=reuse, scope=scope)
+        return tf.keras.layers.BatchNormalization()(inp)
     elif FLAGS.norm == 'layer_norm':
-        return tf_layers.layer_norm(inp, activation_fn=activation, reuse=reuse, scope=scope)
+        return tf.keras.layers.LayerNormalization(axis = -1)(inp)
     elif FLAGS.norm == 'None':
         if activation is not None:
             return activation(inp)

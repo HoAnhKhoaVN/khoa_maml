@@ -14,10 +14,28 @@ Usage Instructions:
         python main.py --datasource=omniglot --metatrain_iterations=60000 --meta_batch_size=16 --update_batch_size=1 --num_classes=20 --update_lr=0.1 --num_updates=5 --logdir=logs/omniglot20way/
 
     5-way 1-shot mini imagenet:
-        python main.py --datasource=miniimagenet --metatrain_iterations=60000 --meta_batch_size=4 --update_batch_size=1 --update_lr=0.01 --num_updates=5 --num_classes=5 --logdir=logs/miniimagenet1shot/ --num_filters=32 --max_pool=True
+        python main.py --datasource=miniimagenet \
+                       --metatrain_iterations=60000 \
+                       --meta_batch_size=4 \
+                       --update_batch_size=1 \
+                       --update_lr=0.01 \
+                       --num_updates=5 \
+                       --num_classes=5 \
+                       --logdir=logs/miniimagenet1shot/ \
+                       --num_filters=32 \
+                       --max_pool=True
 
     5-way 5-shot mini imagenet:
-        python main.py --datasource=miniimagenet --metatrain_iterations=60000 --meta_batch_size=4 --update_batch_size=5 --update_lr=0.01 --num_updates=5 --num_classes=5 --logdir=logs/miniimagenet5shot/ --num_filters=32 --max_pool=True
+        python main.py --datasource=miniimagenet \
+                       --metatrain_iterations=60000 \
+                       --meta_batch_size=4 \
+                       --update_batch_size=5 \
+                       --update_lr=0.01 \
+                       --num_updates=5 \
+                       --num_classes=5 \
+                       --logdir=logs/miniimagenet5shot/ \
+                       --num_filters=32 \
+                       --max_pool=True
 
     To run evaluation, use the '--train=False' flag and the '--test_set=True' flag to use the test set.
 
@@ -33,7 +51,7 @@ import tensorflow as tf
 
 from data_generator import DataGenerator
 from maml import MAML
-from tensorflow.python.platform import flags
+from absl import flags
 
 FLAGS = flags.FLAGS
 
@@ -222,6 +240,11 @@ def main():
             test_num_updates = 10
     else:
         if FLAGS.datasource == 'miniimagenet':
+            if FLAGS.train == True:
+                test_num_updates = 1  # eval on at least one update during training
+            else:
+                test_num_updates = 10
+        elif FLAGS.datasource == 'nom':
             if FLAGS.train == True:
                 test_num_updates = 1  # eval on at least one update during training
             else:
